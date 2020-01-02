@@ -4,6 +4,7 @@ cp -rf /etc/ansible/ mypath/myproject/
 ```
 
 decomment inventory in file ansible.cfg
+
 from:
 ```
 #inventory      = /etc/ansible/hosts
@@ -12,4 +13,17 @@ from:
 to:
 ```
 inventory      = hosts
+```
+
+
+# create vagrants machines
+```
+vagrant init ubuntu/bionic64
+```
+
+Edit Vagrantfile
+
+start machines
+```
+vagrant up
 ```
