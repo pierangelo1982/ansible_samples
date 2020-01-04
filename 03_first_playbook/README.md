@@ -1,6 +1,6 @@
-### first playbook
+# first playbook
 
-# create a task:
+### create a task:
 
 create a folder named playbooks:
 

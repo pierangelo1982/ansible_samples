@@ -3,3 +3,7 @@
     tasks:
       - name: mostra hostname del server
         command: hostname
+
+      - name: mostra ram
+        debug: var=ansible_memory_mb.real.used
+        debug: var=ansible_memory_mb.real.free
