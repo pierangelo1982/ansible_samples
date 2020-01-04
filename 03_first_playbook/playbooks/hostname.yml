@@ -1,0 +1,5 @@
+---
+  - hosts: production
+    tasks:
+      - name: mostra hostname del server
+        command: hostname
