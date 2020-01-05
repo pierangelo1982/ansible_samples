@@ -4,3 +4,12 @@
   tasks:
     - name: installa NGINX
       apt: name=nginx state=present update_cache=yes
+
+    - name: installa programmi in loop con with_items
+      apt: name="{{item}}" state=present update_cache=yes
+      with_items:
+        - python-pip
+        - python-virtualenv
+        - emacs
+        - git
+        - unzip
