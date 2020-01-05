@@ -7,3 +7,10 @@
       - name: mostra ram
         debug: var=ansible_memory_mb.real.used
         debug: var=ansible_memory_mb.real.free
+
+      - name: mostra ram meglio
+        debug:
+          msg: "Ram Usata su {{ansible_memory_mb.real.used}}mb, ram libera: {{ansible_memory_mb.real.free}}mb"
+
+      - name: Output first disk size
+        debug: var=ansible_facts.hostname
