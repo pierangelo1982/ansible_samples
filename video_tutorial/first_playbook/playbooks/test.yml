@@ -1,0 +1,18 @@
+---
+- hosts: development
+  tasks:
+
+    - name: mostra name server
+      command: hostname
+
+    - name: mostra stato memoria RAM
+      debug: var=ansible_memory_mb.real.used
+      debug: var=ansible_memory_mb.real.free
+
+    - name: mostra messaggio stato RAM
+      debug:
+        msg: "La ram usata è {{ansible_memory_mb.real.used}}mb, mentre la ram libera è {{ansible_memory_mb.real.free}}mb"
+
+    - name: ultima prova
+      debug:
+        var: ansible_facts.date_time.date
