@@ -2,6 +2,10 @@
 - hosts: development
   become: true # operate as admin
   tasks:
+
+    - name: disabilita modulo wsgi
+      apache2_module: state=absent name=wsgi
+      
     - name: stop apache
       service:
           name: apache2
