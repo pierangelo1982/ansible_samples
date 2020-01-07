@@ -1,0 +1,14 @@
+---
+- hosts: development
+  become: true # operate as admin
+  tasks:
+    - name: stop apache
+      service:
+          name: apache2
+          state: stopped
+
+    - name: assicurati che APACHE non sia installato
+      apt: 
+        name: apache2 
+        state: absent 
+        update_cache: no

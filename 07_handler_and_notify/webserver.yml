@@ -1,0 +1,33 @@
+---
+- hosts: development
+  become: true
+  tasks:
+
+    - name: installa apache
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+
+    - name: assicurati che Apache sia attivo
+      service: 
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: installa mod wsgi
+      apt:
+        name: libapache2-mod-wsgi
+        state: present
+        update_cache: yes
+
+    - name: assicurati che mod wsgi sia attivo
+      apache2_module: state=present name=wsgi
+      notify: restart apache2
+
+
+  handlers:
+
+    - name: restart apache2
+      service: name=apache2 state=restarted
+
