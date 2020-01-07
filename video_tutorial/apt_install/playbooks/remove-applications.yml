@@ -1,0 +1,5 @@
+---
+- hosts: development
+  tasks:
+    - name: remove nginx
+      apt: name=nginx state=absent update_cache=yes

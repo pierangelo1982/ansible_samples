@@ -1,0 +1,20 @@
+---
+- hosts: development
+  become: true # operate as admin
+  tasks:
+    - name: installa NGINX
+      apt: name=nginx state=present update_cache=yes
+      #apt: name=nginx autoremove=yes
+
+    - name: ensure NGINX started
+      service: name=nginx state=started enabled=yes
+
+    - name: installa programmi in loop con with_items
+      apt: name="{{item}}" state=present update_cache=yes
+      loop:
+        - python-pip
+        - python-virtualenv
+        - emacs
+        - git
+        - unzip
+

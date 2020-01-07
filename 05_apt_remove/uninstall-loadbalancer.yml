@@ -1,0 +1,19 @@
+---
+- hosts: development
+  become: true # operate as admin
+  tasks:
+    - name: stop nginx
+      service:
+          name: nginx
+          state: stopped
+
+    - name: ensure nginx is not installed
+      apt: name=nginx state=absent update_cache=no
+ 
+    #- name: Run lxc apt-autoremove on cbz01 lxd host per vm
+    #  command: /usr/bin/lxc exec {{ item }} -- /usr/bin/apt-get --purge -y autoremove
+    #  loop:
+    #    - nginx
+    #    - emacs
+ 
+
