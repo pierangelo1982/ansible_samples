@@ -1,0 +1,10 @@
+---
+- hosts: development
+  become: true
+  tasks:
+
+    - name: installa nginx
+      apt: name=nginx state=present update_cache=yes
+
+    - name: verifica che nginx sia partito
+      service: name=nginx state=started

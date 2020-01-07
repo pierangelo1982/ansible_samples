@@ -1,0 +1,15 @@
+---
+- hosts: development
+  become: true
+  tasks:
+
+    - name: ferma apache2
+      service: 
+        name: apache2 
+        state: stopped
+
+    - name: assicurati che Apache2 non sia più attivo o installato
+      apt: 
+        name: apache2 
+        state: absent 
+        update_cache: no

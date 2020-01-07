@@ -1,0 +1,15 @@
+---
+- hosts: development
+  become: true
+  tasks:
+
+    - name: installa APACHE
+      apt: 
+        name: apache2 
+        state: present 
+        update_cache: yes
+
+    - name: verifica che apache2 sia attivo
+      service: 
+        name: apache2
+        state: started

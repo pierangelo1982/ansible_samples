@@ -1,0 +1,22 @@
+---
+- hosts: development
+  become: true
+  tasks:
+
+    #- name: programmi di default
+    #  apt: name="{{item}}" state=present update_cache=yes
+    #  with_items:
+    #    - emacs
+    #    - python-pip
+    #    - virtualenv
+    #    - git
+    #    - unzip
+
+    - name: programmi di default
+      apt: name="{{item}}" state=present update_cache=yes
+      loop:
+        - emacs
+        - python-pip
+        - virtualenv
+        - git
+        - unzip
