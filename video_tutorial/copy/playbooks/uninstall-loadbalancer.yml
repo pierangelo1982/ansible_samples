@@ -1,0 +1,10 @@
+---
+- hosts: development
+  become: true
+  tasks:
+
+    - name: ferma nginx
+      service: name=nginx state=stopped
+
+    - name: assicurati che NGINX non sia più attivo o installato
+      apt: name=nginx state=absent update_cache=no

@@ -1,0 +1,20 @@
+---
+- hosts: development
+  become: true
+  tasks:
+
+    - name: installa nginx
+      apt: name=nginx state=present update_cache=yes
+
+    - name: verifica che nginx sia partito
+      service: name=nginx state=started
+
+    - name: carica index.html
+      copy: src=../files/index_nginx.html dest=/var/www/html/index.html mode=0755
+      notify: restart nginx
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
