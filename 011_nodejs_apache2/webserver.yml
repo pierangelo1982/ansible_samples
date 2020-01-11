@@ -47,6 +47,15 @@
       ignore_errors: yes
       #when: npm_finished.changed
 
+    - name: configure pm2 to restart on startup
+      shell: pm2 startup systemd
+
+    - name: configure pm2 env path on startup
+      command: sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u pierangelo --hp /home/pierangelo
+
+    - name: salvo pm2 env path
+      command: pm2 save
+
 
   handlers:
 
