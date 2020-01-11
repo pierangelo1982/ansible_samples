@@ -1,0 +1,90 @@
+---
+- hosts: webserver
+  become: true
+  tasks:
+
+    - name: installa apche2
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+
+    - name: assicurati che Apache sia attivo
+      service: 
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: installa altri
+      apt: name={{item}} state=present update_cache=yes
+      loop:
+        - build-essential
+        - libssl-dev
+        - curl
+        - git
+
+    - name: installa nodejs
+      apt: 
+        name: nodejs 
+        state: latest 
+        update_cache: yes
+
+    - name: installa npm
+      apt: 
+        name: npm 
+        state: present 
+        update_cache: yes
+
+    - name: copia app node
+      copy: 
+        src: demo/ 
+        dest: /var/www/demo 
+        mode: 0755
+      notify: restart apache2
+
+    - name: abilita proxy
+      apache2_module: 
+        state: present 
+        name: proxy
+      notify: restart apache2
+
+    - name: abilita proxy_http
+      apache2_module: 
+        state: present 
+        name: proxy_http
+      notify: restart apache2
+
+    - name: install pm2 con npm 
+      npm:
+        name: pm2
+        global: yes
+        state: present
+
+    - name: start daemon pm2 su app nodejs
+      command: pm2 start app.js --name demo chdir=/var/www/demo
+      ignore_errors: yes
+
+    - name: copia file virtualhost
+      copy: 
+        src: files/demo.conf 
+        dest: /etc/apache2/sites-available/demo.conf 
+        mode: 0755
+
+    - name: disattiva apache default virtuahost
+      file: 
+        path: /etc/apache2/sites-enabled/000-default.conf 
+        state: absent
+      notify: restart apache2
+
+    - name: attiva file virtualhost
+      file: 
+        src: /etc/apache2/sites-available/demo.conf 
+        dest: /etc/apache2/sites-enabled/demo.conf 
+        state: link
+      notify: restart apache2
+
+
+  handlers:
+
+    - name: restart apache2
+      service: name=apache2 state=restarted
