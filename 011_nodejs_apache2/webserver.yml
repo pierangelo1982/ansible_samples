@@ -56,6 +56,18 @@
     - name: salvo pm2 env path
       command: pm2 save
 
+    - name: copia file virtualhost
+      copy: src=node_apache.conf dest=/etc/apache2/sites-available/node_apache.conf mode=0755
+
+    - name: disattiva apache default virtuahost
+      file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+      notify: restart apache2
+
+    - name: attiva file virtualhost
+      file: src=/etc/apache2/sites-available/node_apache.conf dest=/etc/apache2/sites-enabled/node_apache.conf state=link
+      notify: restart apache2
+
+
 
   handlers:
 
