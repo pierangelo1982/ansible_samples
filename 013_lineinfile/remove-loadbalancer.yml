@@ -1,0 +1,12 @@
+
+---
+- hosts: development
+  become: true # operate as admin
+  tasks:
+    - name: stop nginx
+      service:
+          name: nginx
+          state: stopped
+
+    - name: assicurati che NGINX non sia installato
+      apt: name=nginx state=absent update_cache=no
