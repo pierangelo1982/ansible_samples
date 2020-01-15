@@ -17,8 +17,10 @@
 
     - name: sovrascrivi riga per abilitare mysql all'esterno #da 127.0.0.1 a 0.0.0.0
       lineinfile:
-        dest: /etc/mysql/my.cnf
-        regexp: ^bind-address line="bind-address = 0.0.0.0" # sovrascrive 127.0.0.1 in my.cnf
+        #dest: /etc/mysql/my.cnf
+        dest: /etc/mysql/mysql.conf.d/mysqld.cnf 
+        regexp: ^bind-address 
+        line: "bind-address = 0.0.0.0" # sovrascrive 127.0.0.1 in my.cnf
       notify: restart mysql
 
 
