@@ -27,6 +27,9 @@
       copy: src=demo/ dest=/var/www/app mode=0755
       notify: restart apache2
 
+    - name: installa librerie nodejs
+      command: npm install chdir=/var/www/app
+
     - name: abilita proxy
       apache2_module: state=present name=proxy
       notify: restart apache2
@@ -49,6 +52,9 @@
 
     - name: configure pm2 to restart on startup
       shell: pm2 startup systemd
+
+    - name: restart pm2 systemd
+      command: systemctl restart pm2-root
 
     - name: configure pm2 env path on startup
       command: sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u pierangelo --hp /home/pierangelo
@@ -73,3 +79,6 @@
 
     - name: restart apache2
       service: name=apache2 state=restarted
+
+    - name: restart daemon pm2
+      command: systemctl restart pm2-root
