@@ -42,6 +42,9 @@
         mode: 0755
       notify: restart apache2
 
+    - name: installa librerie npm app demo
+      command: npm install chdir=/var/www/demo
+            
     - name: abilita proxy
       apache2_module: 
         state: present 
