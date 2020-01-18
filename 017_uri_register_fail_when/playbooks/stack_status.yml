@@ -51,19 +51,22 @@
 
 
 - hosts: loadbalancer
+  #gather_facts: false
   tasks:
     - name: verify backend index response
-      uri: url=http://{{item}} return_content=yes
-      with_items: groups.webserver
+      uri: url=http://{{item}}:8080 return_content=yes
+      with_items: "{{groups.webserver}}"
       register: app_index
 
-    - fail: msg="index failed to return content"
+    - fail: 
+        msg: "index failed to return content"
+      #when: "'Hello, from sunny {{item.item}}!' not in item.content"
       when: "'Hello, from sunny {{item.item}}!' not in item.content"
       with_items: "{{app_index.results}}"
 
     - name: verify backend db response
-      uri: url=http://{{item}}/db return_content=yes
-      with_items: groups.webserver
+      uri: url=http://{{item}}:8080/db return_content=yes
+      with_items: "{{groups.webserver}}"
       register: app_db
 
     - fail: msg="db failed to return content"
