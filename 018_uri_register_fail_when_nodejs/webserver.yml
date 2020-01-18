@@ -1,0 +1,84 @@
+---
+- hosts: webserver
+  become: true
+  tasks:
+
+    - name: installa apache2
+      apt: name=apache2 state=present update_cache=yes
+
+    - name: assicurati che apache sia attivo
+      service: name=apache2 state=started enabled=yes
+
+    - name: installa altri
+      apt: name={{item}} state=present update_cache=yes
+      loop:
+        - build-essential
+        - libssl-dev
+        - curl
+        - git
+
+    - name: installa nodejs
+      apt: name=nodejs state=latest update_cache=yes
+
+    - name: installa npm
+      apt: name=npm state=present update_cache=yes
+
+    - name: copia app node
+      copy: src=demo/ dest=/var/www/app mode=0755
+      notify: restart apache2
+
+    - name: installa librerie nodejs
+      command: npm install chdir=/var/www/app
+
+    - name: abilita proxy
+      apache2_module: state=present name=proxy
+      notify: restart apache2
+
+    - name: abilita proxy_http
+      apache2_module: state=present name=proxy_http
+      notify: restart apache2
+
+      # sudo npm install -g pm2
+    - name: install pm2 con npm 
+      npm:
+        name: pm2
+        global: yes
+        state: present
+
+    - name: start daemon pm2 su app nodejs
+      command: pm2 start app.js --name app chdir=/var/www/app
+      ignore_errors: yes
+      #when: npm_finished.changed
+
+    - name: configure pm2 to restart on startup
+      shell: pm2 startup systemd
+
+    - name: restart pm2 systemd
+      command: systemctl restart pm2-root
+
+    - name: configure pm2 env path on startup
+      command: sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u pierangelo --hp /home/pierangelo
+
+    - name: salvo pm2 env path
+      command: pm2 save
+
+    - name: copia file virtualhost
+      copy: src=node_apache.conf dest=/etc/apache2/sites-available/node_apache.conf mode=0755
+
+    - name: disattiva apache default virtuahost
+      file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+      notify: restart apache2
+
+    - name: attiva file virtualhost
+      file: src=/etc/apache2/sites-available/node_apache.conf dest=/etc/apache2/sites-enabled/node_apache.conf state=link
+      notify: restart apache2
+
+
+
+  handlers:
+
+    - name: restart apache2
+      service: name=apache2 state=restarted
+
+    - name: restart daemon pm2
+      command: systemctl restart pm2-root
