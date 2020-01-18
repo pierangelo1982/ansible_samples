@@ -32,7 +32,7 @@
   tasks:
     - name: verifica end-to-end index response
       uri: url=http://{{item}}:8080 return_content=yes
-      with_items: groups.loadbalancer
+      with_items: "{{ groups.loadbalancer }}"
       register: lb_index
 
     - fail: msg="index ha fallito a ritornare un contenuto"
@@ -41,8 +41,8 @@
       with_items: "{{lb_index.results}}"
 
     - name: verifica end-to-end db response
-      uri: url=http://{{item}}/db return_content=yes
-      with_items: groups.loadbalancer
+      uri: url=http://{{item}}:8080/db return_content=yes
+      with_items: "{{ groups.loadbalancer }}"
       register: lb_db
 
     - fail: msg="db fha fallito a ritornare content"
