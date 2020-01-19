@@ -1,0 +1,12 @@
+[webserver]
+192.168.59.1 ansible_ssh_port=2222
+192.168.58.1 ansible_ssh_port=2222
+
+[loadbalancer]
+192.168.57.1 ansible_ssh_port=2222
+
+[database]
+192.168.60.1 ansible_ssh_port=2222
+
+[control]
+control ansible_connection=local
