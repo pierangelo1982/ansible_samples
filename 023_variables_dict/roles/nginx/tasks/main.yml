@@ -1,0 +1,25 @@
+---
+# tasks file for nginx
+- name: installa NGINX
+  apt: name=nginx state=present update_cache=yes
+
+- name: assicurati che NGINX sia attivo
+  service: name=nginx state=started enabled=yes
+
+- name: copy index.html
+  copy: src=files/nginx/index.html dest=/var/www/html/index.html mode=0755
+  notify: restart nginx
+
+- name: configura nginx site
+  template: src=templates/nginx.conf.j2 dest="/etc/nginx/sites-available/{{ item.key }}" mode=0644
+  with_dict: "{{sites}}"
+  notify: restart nginx
+
+- name: disattiva nginx configurazione di default
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  notify: restart nginx
+
+- name: attiva custom configurazione nginx
+  file: src="/etc/nginx/sites-available/{{ item.key }}" dest="/etc/nginx/sites-enabled/{{ item.key }}" state=link
+  with_dict: "{{sites}}"
+  notify: restart nginx
