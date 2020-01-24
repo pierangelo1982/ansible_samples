@@ -1,0 +1,32 @@
+---
+- name: installa apache
+  apt:
+    name: apache2
+    state: present
+    update_cache: yes
+
+- name: assicurati che Apache sia attivo
+  service: 
+    name: apache2
+    state: started
+    enabled: yes
+
+- name: install web components
+  apt: name={{item}} state=present update_cache=yes
+  loop:
+    - libapache2-mod-wsgi
+
+- name: assicurati che mod wsgi sia attivo
+  apache2_module: state=present name=wsgi
+  notify: restart apache2
+
+- name: de-activate default apache site
+  file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+  notify: restart apache2
+
+- name: copy index.html
+  copy: 
+    src: files/apache2/index.html 
+    dest: /var/www/html/index.html
+    mode: 0755
+  notify: restart apache2
