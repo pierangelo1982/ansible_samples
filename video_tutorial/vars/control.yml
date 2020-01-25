@@ -1,0 +1,12 @@
+---
+- hosts: control
+  become: true
+  tasks:
+    - name: test
+      command: hostname
+
+    - name: install tools
+      apt: name={{item}} state=present update_cache=no
+      loop:
+        - curl
+        - python-httplib2

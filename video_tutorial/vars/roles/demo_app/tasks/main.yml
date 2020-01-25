@@ -1,0 +1,49 @@
+---
+- name: installa nodejs
+  apt:
+    name: nodejs
+    state: latest
+    update_cache: yes
+
+- name: installa npm
+  apt:
+    name: npm
+    state: present
+    update_cache: yes
+
+- name: copia app node
+  copy:
+    src: demo/
+    dest: /var/www/demo
+    mode: 0755
+  notify: restart apache2
+
+- name: copia file app.js2 in app demo
+  template: src=app.js.j2 dest=/var/www/demo/app.js mode=0755
+  notify: restart apache2 
+
+- name: installa librerie npm app demo
+  command: npm install chdir=/var/www/demo
+
+- name: install pm2 con npm
+  npm:
+    name: pm2
+    global: yes
+    state: present
+
+- name: start daemon pm2 su app nodejs
+  command: pm2 start app.js --name demo chdir=/var/www/demo
+  ignore_errors: yes
+
+- name: copia file virtualhost
+  copy:
+    src: demo.conf
+    dest: /etc/apache2/sites-available/demo.conf
+    mode: 0755
+
+- name: attiva file virtualhost
+  file:
+    src: /etc/apache2/sites-available/demo.conf
+    dest: /etc/apache2/sites-enabled/demo.conf
+    state: link
+  notify: restart apache2
