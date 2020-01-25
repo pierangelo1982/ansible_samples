@@ -1,0 +1,38 @@
+---
+- name: installa apache2
+  apt:
+    name: apache2
+    state: present
+    update_cache: yes
+
+- name: assicurati che Apache sia attivo
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+
+- name: installa altri
+  apt: name={{item}} state=present update_cache=yes
+  loop:
+    - build-essential
+    - libssl-dev
+    - curl
+    - git
+
+- name: abilita proxy
+  apache2_module:
+    state: present
+    name: proxy
+  notify: restart apache2
+
+- name: abilita proxy_http
+  apache2_module:
+    state: present
+    name: proxy_http
+  notify: restart apache2
+
+- name: disattiva apache default virtuahost
+  file:
+    path: /etc/apache2/sites-enabled/000-default.conf
+    state: absent
+  notify: restart apache2

@@ -1,0 +1,15 @@
+---
+- name: installa NGINX
+  apt: name=nginx state=present update_cache=yes
+
+- name: configura nginx site
+  template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/demo mode=0644
+  notify: restart nginx
+
+- name: disattiva nginx configurazione di default
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  notify: restart nginx
+
+- name: attiva custom configurazione nginx
+  file: src=/etc/nginx/sites-available/demo dest=/etc/nginx/sites-enabled/demo state=link
+  notify: restart nginx
