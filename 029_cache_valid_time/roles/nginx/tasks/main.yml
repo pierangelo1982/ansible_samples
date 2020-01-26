@@ -1,7 +1,7 @@
 ---
 # tasks file for nginx
 - name: installa NGINX
-  apt: name=nginx state=present
+  apt: name=nginx state=present update_cache=yes
 
 - name: assicurati che NGINX sia attivo
   service: name=nginx state=started enabled=yes

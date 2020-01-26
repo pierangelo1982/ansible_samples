@@ -1,6 +1,6 @@
 ---
 - name: install web components
-  apt: name={{item}} state=present
+  apt: name={{item}} state=present update_cache=yes
   loop:
     - python-pip
     - python-virtualenv
