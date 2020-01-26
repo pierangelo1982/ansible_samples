@@ -1,0 +1,6 @@
+---
+- hosts: loadbalancer
+  become: true # operate as admin
+  gather_facts: false
+  roles:
+    - nginx
