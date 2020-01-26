@@ -1,0 +1,8 @@
+---
+- hosts: webserver
+  become: true
+  gather_facts: false
+  roles:
+    - apache2
+    #- demo_app
+    - { role: demo_app, db_user: demo, db_pass: demo, db_name: demo }
