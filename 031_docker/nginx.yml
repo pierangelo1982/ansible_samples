@@ -1,0 +1,13 @@
+---
+- hosts: docker
+  become: true
+  tasks:
+    - name: installa tools
+      apt:
+        name: "{{item}}"
+        state: present
+        update_cache: yes
+        loop:
+          - curl
+  roles:
+    - nginx
