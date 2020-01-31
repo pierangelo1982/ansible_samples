@@ -1,0 +1,8 @@
+---
+# tasks file for docker-compose
+- name: installa docker docker-compose
+  get_url:
+    #url: https://github.com/docker/compose/releases/download/1.25.3/docker-compose-$(uname -s)-$(uname -m)
+    url: https://github.com/docker/compose/releases/download/1.25.3/docker-compose-{{ ansible_system }}-{{ ansible_userspace_architecture }}
+    dest: /usr/local/bin/docker-compose
+    mode: +x
