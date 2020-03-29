@@ -23,6 +23,9 @@
     update_cache: yes
   notify: restart elasticsearch
 
+- name: start elasticsearch
+  service: name=elasticsearch state=started
+
 - name: sovrascrivi riga per abilitare ip
   lineinfile:
     dest: /etc/elasticsearch/elasticsearch.yml 

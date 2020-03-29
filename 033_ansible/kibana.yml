@@ -2,5 +2,4 @@
 - hosts: elasticsearch
   become: true
   roles:
-    - elasticsearch
-    #- kibana
+    - kibana
