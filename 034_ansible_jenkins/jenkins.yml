@@ -1,0 +1,40 @@
+---
+- hosts: development
+  become: true # operate as admin
+  
+  tasks:
+    - name: install java
+      apt:
+        name: openjdk-8-jdk
+        state: present
+        update_cache: yes
+
+    - name: aggiungi jenkins GPG Key
+      apt_key:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+        state: present
+
+    - name: aggiungi jenkins repository
+      apt_repository:
+        repo: deb https://pkg.jenkins.io/debian-stable binary/
+        state: present
+
+    - name: install jenkins
+      apt:
+        name: jenkins
+        state: present
+        update_cache: yes
+
+    - name: ensure jenkins is running
+      service:
+        name: jenkins 
+        state: started
+    
+    # /var/lib/jenkins/secrets/initialAdminPassword
+    - name: show code
+      command: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: out
+
+    - debug: var=out.stdout_lines
+
+

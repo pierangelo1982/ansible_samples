@@ -1,0 +1,2 @@
+[development]
+188.166.64.165 ansible_ssh_user=root
