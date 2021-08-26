@@ -1,0 +1,70 @@
+---
+# tasks file for basics
+- name: install default program
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - curl
+    - git
+    - vim
+    - apt-transport-https
+    - ca-certificates
+    - gnupg-agent
+    - software-properties-common
+    - python3-pip
+    - python3-setuptools
+    - snapd
+
+- name: Import the public key used by the package management system
+  apt_key: 
+    url: https://www.mongodb.org/static/pgp/server-4.4.asc
+    state: present
+
+- name: Add MongoDB repository
+  apt_repository: 
+    repo:  "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse"
+    state: present
+
+- name: install mongodb
+  apt: 
+    name: mongodb-org 
+    state: latest 
+    update_cache: yes
+
+- name: start mongo
+  service: 
+    name: mongod 
+    state: started
+
+- name: install pymongo
+  pip:
+    name: pymongo
+
+- name: Create 'admin user' database mongod.
+  community.mongodb.mongodb_user:
+    database: admin
+    name: mondoUser
+    password: "password1234"
+    roles: userAdminAnyDatabase,readWriteAnyDatabase
+    state: present
+  ignore_errors: yes
+  register: output
+
+- name: restart mongodb
+  service: 
+    name: mongod
+    state: restarted
+
+- name: configure mongod
+  template: 
+    src: templates/mongod.conf.j2 
+    dest: /etc/mongod.conf 
+    mode: 0755
+
+- name: restart mongodb
+  service: 
+    name: mongod
+    state: restarted
+

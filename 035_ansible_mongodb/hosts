@@ -1,0 +1,3 @@
+[database]
+139.162.151.153 ansible_ssh_user=root
+
